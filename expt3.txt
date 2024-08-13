@@ -1,0 +1,191 @@
+-- Create Branch table
+CREATE TABLE Branch (
+    branchname VARCHAR(50),
+    branchcity VARCHAR(50) NOT NULL,
+    asset INT NOT NULL CHECK (asset > 0),
+    PRIMARY KEY (branchname)
+);
+
+-- Create Customer table
+CREATE TABLE Customer (
+    custname VARCHAR(50),
+    custstreet VARCHAR(50) NOT NULL,
+    custcity VARCHAR(50) NOT NULL,
+    PRIMARY KEY (custname)
+);
+
+-- Create Account table
+CREATE TABLE Account (
+    accnum VARCHAR(50) PRIMARY KEY,
+    branchname VARCHAR(50),
+    balance INT CHECK (balance > 500),
+    FOREIGN KEY (branchname) REFERENCES Branch(branchname)
+);
+
+-- Create Loan table
+CREATE TABLE Loan (
+    loanno VARCHAR(50) PRIMARY KEY,
+    branchname VARCHAR(50),
+    amount INT CHECK (amount > 0),
+    FOREIGN KEY (branchname) REFERENCES Branch(branchname)
+);
+
+-- Create Borrower relation (many-to-many between Customer and Loan)
+CREATE TABLE Borrower (
+    custname VARCHAR(50),
+    loanno VARCHAR(50),
+    FOREIGN KEY (custname) REFERENCES Customer(custname),
+    FOREIGN KEY (loanno) REFERENCES Loan(loanno)
+);
+
+-- Create Depositor relation (many-to-many between Customer and Account)
+CREATE TABLE Depositor (
+    custname VARCHAR(50),
+    accnum VARCHAR(50),
+    FOREIGN KEY (custname) REFERENCES Customer(custname),
+    FOREIGN KEY (accnum) REFERENCES Account(accnum)
+);
+
+-- Add Constraint street not null (already included during creation)
+
+-- Add a column phoneNo to customer table
+ALTER TABLE Customer ADD phoneNo VARCHAR(10);
+
+-- Add column custage to customer table
+ALTER TABLE Customer ADD custage INT;
+
+-- Add Constraint age greater than 18
+ALTER TABLE Customer ADD CONSTRAINT chk_age CHECK (custage > 18);
+
+-- Change the size of the phoneNo to varchar(10) (already defined during addition)
+
+-- Drop the column phoneNo from customer table
+ALTER TABLE Customer DROP COLUMN phoneNo;
+
+-- Remove the constraint on age
+ALTER TABLE Customer DROP CONSTRAINT chk_age;
+
+
+-- Insert an account A-978245 at the Park Street branch with a balance of Rs. 12000
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-978245', 'Park Street', 12000);
+
+-- Insert a customer Vivek who lives in Main Street and city is Ichalkarnji
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('Vivek', 'Main Street', 'Ichalkarnji');
+
+-- Insert at least 5 rows in each table
+-- Branch table
+INSERT INTO Branch (branchname, branchcity, asset) VALUES ('Downtown', 'New York', 5000);
+INSERT INTO Branch (branchname, branchcity, asset) VALUES ('Perryridge', 'San Francisco', 3000);
+INSERT INTO Branch (branchname, branchcity, asset) VALUES ('Brighton', 'Boston', 2000);
+INSERT INTO Branch (branchname, branchcity, asset) VALUES ('Mianus', 'Los Angeles', 4000);
+INSERT INTO Branch (branchname, branchcity, asset) VALUES ('Redwood', 'Seattle', 2500);
+
+-- Customer table
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('John', '1st Street', 'New York');
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('Alice', '2nd Avenue', 'San Francisco');
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('Bob', '3rd Boulevard', 'Boston');
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('Charlie', '4th Drive', 'Los Angeles');
+INSERT INTO Customer (custname, custstreet, custcity) VALUES ('Diana', '5th Lane', 'Seattle');
+
+-- Account table
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-101', 'Downtown', 800);
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-102', 'Perryridge', 600);
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-103', 'Brighton', 1500);
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-104', 'Mianus', 900);
+INSERT INTO Account (accnum, branchname, balance) VALUES ('A-105', 'Redwood', 2000);
+
+-- Loan table
+INSERT INTO Loan (loanno, branchname, amount) VALUES ('L-11', 'Downtown', 1500);
+INSERT INTO Loan (loanno, branchname, amount) VALUES ('L-12', 'Perryridge', 2000);
+INSERT INTO Loan (loanno, branchname, amount) VALUES ('L-13', 'Brighton', 3000);
+INSERT INTO Loan (loanno, branchname, amount) VALUES ('L-14', 'Mianus', 2500);
+INSERT INTO Loan (loanno, branchname, amount) VALUES ('L-15', 'Redwood', 3500);
+
+-- Change the assets of Perryridge branch to 3400
+UPDATE Branch SET asset = 3400 WHERE branchname = 'Perryridge';
+
+-- Add 2% interest to all bank account balances with a balance of 500 or less
+UPDATE Account SET balance = balance * 1.02 WHERE balance <= 500;
+
+-- Transfer the accounts and loans of Perryridge branch to Downtown branch
+UPDATE Account SET branchname = 'Downtown' WHERE branchname = 'Perryridge';
+UPDATE Loan SET branchname = 'Downtown' WHERE branchname = 'Perryridge';
+
+-- Transfer Rs. 100 from account A-101 to A-215
+UPDATE Account SET balance = balance - 100 WHERE accnum = 'A-101';
+UPDATE Account SET balance = balance + 100 WHERE accnum = 'A-215';
+
+-- Delete the branch Perryridge
+DELETE FROM Branch WHERE branchname = 'Perryridge';
+
+-- Remove all the customers who live in 'Downtown'
+DELETE FROM Customer WHERE custcity = 'Downtown';
+
+-- Remove all the accounts
+DELETE FROM Account;
+
+-- List all branch names and their assets
+SELECT branchname, asset FROM Branch;
+
+-- List all loans with amount greater than 1000
+SELECT * FROM Loan WHERE amount > 1000;
+
+-- Find bank accounts with a balance under 700
+SELECT * FROM Account WHERE balance < 700;
+
+-- List all accounts of Perryridge branch with balance less than 1000
+SELECT * FROM Account WHERE branchname = 'Perryridge' AND balance < 1000;
+
+-- Find the names of all branches in the loan relation
+SELECT DISTINCT branchname FROM Loan;
+
+-- Find all loan numbers for loans made at the Park Street branch with loan amounts greater than Rs. 10000
+SELECT loanno FROM Loan WHERE branchname = 'Park Street' AND amount > 10000;
+
+-- Find the loan number of those loans with loan amounts between Rs. 10000 and Rs. 50000
+SELECT loanno FROM Loan WHERE amount BETWEEN 10000 AND 50000;
+
+-- Find the names of all customers
+SELECT custname FROM Customer;
+
+-- Find the names of all branches in the loan relation, don't display duplicates
+SELECT DISTINCT branchname FROM Loan;
+
+-- Display the entire Branch table
+SELECT * FROM Branch;
+
+-- Find the account number for all accounts where the balance is greater than $700
+SELECT accnum FROM Account WHERE balance > 700;
+
+-- Find the account number and balance for all accounts from Brighton where the balance is greater than 800
+SELECT accnum, balance FROM Account WHERE branchname = 'Brighton' AND balance > 800;
+
+-- Display the branch name and assets from all branches in thousands of dollars and rename the assets column to 'assets in thousands'
+SELECT branchname, asset / 1000 AS "assets in thousands" FROM Branch;
+
+-- Find the name of all branches with assets between one and four million dollars
+SELECT branchname FROM Branch WHERE asset BETWEEN 1000000 AND 4000000;
+
+-- Find the names of all customers whose street address includes the substring 'Main'
+SELECT custname FROM Customer WHERE custstreet LIKE '%Main%';
+
+-- List all Accounts where the Bank_Branch begins with a 'C' and has 'a' as the second character
+SELECT * FROM Account WHERE branchname LIKE 'C_a%';
+
+-- List all Accounts where the Bank_Branch column has 'a' as the second character and has at least 3 characters
+SELECT * FROM Account WHERE branchname LIKE '_a%';
+
+-- Find all loan numbers that appear in the loan relation with null values for amount
+SELECT loanno FROM Loan WHERE amount IS NULL;
+
+-- Find the average account balance at the Perryridge branch
+SELECT AVG(balance) AS average_balance FROM Account WHERE branchname = 'Perryridge';
+
+-- Find maximum amount of any loan in the bank
+SELECT MAX(amount) AS max_loan_amount FROM Loan;
+
+-- List numbers of accounts with balances between 700 and 900
+SELECT COUNT(*) AS num_accounts FROM Account WHERE balance BETWEEN 700 AND 900;
+
+-- List total number of account holders in the 'Capital Bank' branch
+SELECT COUNT(DISTINCT custname) AS num_account_holders FROM Depositor d JOIN Account a ON d.accnum = a.accnum WHERE

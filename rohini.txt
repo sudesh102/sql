@@ -1,0 +1,101 @@
+CREATE TABLE branch(branchname VARCHAR(20) PRIMARY KEY, branchcity VARCHAR(20) NOT NULL, asset NUMBER(20) NOT NULL CHECK(asset>0))
+desc branch 
+CREATE TABLE customer(custname VARCHAR(20) PRIMARY KEY, custstreet VARCHAR(20), custcity VARCHAR(20) NOT NULL)
+desc customer
+CREATE TABLE account(accnum NUMBER(20) PRIMARY KEY, branchname VARCHAR(20), balance NUMBER(20) CHECK(balance>500))
+desc account
+CREATE TABLE loan(loannum NUMBER(20) PRIMARY KEY, branchname VARCHAR(20),amount NUMBER(20) CHECK(amount>0))
+desc loan
+CREATE TABLE borrower(custname VARCHAR(20), loannum NUMBER(20))
+desc borrower
+CREATE TABLE depositor(custname VARCHAR(20), accnum NUMBER(20))
+desc depositor
+ALTER TABLE customer MODIFY(custstreet VARCHAR(20) NOT NULL)
+desc customer
+ALTER TABLE customer ADD(phonenum NUMBER(10))
+desc customer
+ALTER TABLE customer ADD(custage NUMBER(2))
+desc customer
+ALTER TABLE customer MODIFY(custage NUMBER(2) CHECK(custage>18))
+desc customer
+ALTER TABLE customer MODIFY(phonenum VARCHAR(10))
+desc customer
+ALTER TABLE customer DROP COLUMN(phonenum)
+desc customer
+ALTER TABLE customer MODIFY(custage NUMBER(2))
+desc customer
+ALTER TABLE customer MODIFY(custage NUMBER(2))
+desc customer
+ALTER TABLE account MODIFY(accnum VARCHAR(10))
+desc account
+INSERT INTO account(accnum, branchname, balance)VALUES('A-978245','park street',12000)
+SELECT * FROM account
+INSERT INTO customer(custname, custstreet, custcity)VALUES('vivek','main street','ichalkaranji')
+SELECT * FROM customer
+INSERT INTO account (accnum, branchname, balance)VALUES('A-12345', 'Park Street', 10000)
+INSERT INTO account (accnum, branchname, balance)VALUES('A-23456', 'Downtown', 15000)
+INSERT INTO account (accnum, branchname, balance)VALUES('A-34567', 'Brighton', 8000)
+INSERT INTO account (accnum, branchname, balance)VALUES('A-45678', 'Perryridge', 5000)
+INSERT INTO account (accnum, branchname, balance)VALUES('A-56789', 'Park Street', 20000)
+SELECT * FROM account
+DELETE FROM account WHERE balance=10000
+SELECT * FROM account
+UPDATE account SET branchname='california' WHERE balance=20000
+SELECT * FROM account
+INSERT INTO branch (branchname, branchcity, asset)VALUES('SBI', 'jodhpur', 10000)
+INSERT INTO branch (branchname, branchcity, asset)VALUES('RBI', 'delhi', 15000)
+INSERT INTO branch (branchname, branchcity, asset)VALUES('BOI', 'kognoli', 8000)
+INSERT INTO branch (branchname, branchcity, asset)VALUES('HDFC', 'kolhapur', 5000)
+INSERT INTO branch (branchname, branchcity, asset)VALUES('ICIC', 'banglore', 20000)
+SELECT * FROM branch
+UPDATE branch SET branchname='california' WHERE asset=20000
+UPDATE branch SET branchname='perryridge' WHERE asset=5000
+UPDATE branch SET branchname='Brighton' WHERE asset=8000
+UPDATE branch SET branchname='Park Street' WHERE asset=10000
+UPDATE branch SET branchname='Downtown' WHERE asset=15000
+SELECT * FROM branch
+UPDATE branch SET asset = 3400 WHERE branchname = 'perryridge'
+SELECT * FROM branch
+UPDATE account SET balance = balance * 1.02 WHERE balance <= 500
+UPDATE account SET branchname = 'Downtown' WHERE balance=5000
+SELECT * FROM account
+INSERT INTO loan(loannum, branchname, amount)VALUES(101,'Park Street',100000)
+INSERT INTO loan(loannum, branchname, amount)VALUES(102,'Downtown',50000)
+INSERT INTO loan(loannum, branchname, amount)VALUES(103,'Brighton',10000)
+INSERT INTO loan(loannum, branchname, amount)VALUES(104,'perryridge',150000)
+INSERT INTO loan(loannum, branchname, amount)VALUES(105,'california',200000)
+SELECT * FROM loan
+UPDATE Loan SET branchname = 'Downtown' WHERE branchname = 'perryridge'
+SELECT * FROM loan
+UPDATE account SET balance = balance - 100 WHERE accnum = 'A-34567'
+UPDATE account SET balance = balance + 100 WHERE accnum = 'A-45678'
+SELECT * FROM account
+DELETE FROM branch WHERE branchname = 'perryridge'
+SELECT * FROM branch
+INSERT INTO customer(custname, custstreet, custcity)VALUES('darshan','rajarampuri','park street')
+INSERT INTO customer(custname, custstreet, custcity)VALUES('virat','shahupuri','Downtown')
+INSERT INTO customer(custname, custstreet, custcity)VALUES('abhay','andheri','Brighton')
+INSERT INTO customer(custname, custstreet, custcity)VALUES('rohit','bagal chowk','california')
+SELECT * FROM customer
+DELETE FROM customer WHERE custcity= 'Downtown'
+SELECT * FROM customer
+DELETE FROM account
+SELECT branchname, asset FROM branch
+SELECT * FROM loan WHERE amount > 1000
+SELECT * FROM account WHERE balance < 700
+SELECT * FROM Account WHERE branchname= 'perryridge' AND balance < 1000
+SELECT DISTINCT branchname FROM loan
+SELECT loannum FROM loan WHERE branchname = 'Park Street' AND amount > 10000
+SELECT loannum FROM loan WHERE amount BETWEEN 10000 AND 50000
+SELECT custname FROM customer
+SELECT DISTINCT branchname FROM loan
+SELECT * FROM branch
+SELECT accnum FROM account WHERE balance > 700
+SELECT accnum, balance FROM account WHERE branchname = 'Brighton' AND balance > 800
+SELECT branchname, asset / 1000 AS "assets in thousands" FROM branch
+SELECT * FROM branch
+SELECT branchname FROM branch WHERE asset BETWEEN 1000000 AND 4000000
+SELECT custname FROM customer WHERE custstreet LIKE '%main%'
+SELECT * FROM account WHERE branchname LIKE 'c_a%'
+SELECT * FROM account WHERE branchname LIKE '_a%'
+SELECT loannum FROM loan WHERE amount IS NULL
